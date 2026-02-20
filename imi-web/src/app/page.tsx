@@ -1,65 +1,95 @@
-import Image from "next/image";
+import { createClient } from "@/utils/supabase/server";
+import { redirect } from "next/navigation";
+import { logout } from "@/actions/auth";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Separator } from "@/components/ui/separator";
+import { LogOut, User } from "lucide-react";
 
-export default function Home() {
+export default async function Home() {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <div className="flex min-h-screen flex-col bg-background">
+      <header className="border-b">
+        <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-6">
+          <span className="text-lg font-semibold tracking-tight">IMI</span>
+          <div className="flex items-center gap-3">
+            <span className="text-sm text-muted-foreground hidden sm:block">
+              {user.email}
+            </span>
+            <form action={logout}>
+              <Button variant="ghost" size="sm" type="submit">
+                <LogOut className="size-4 mr-1.5" />
+                Cerrar sesión
+              </Button>
+            </form>
+          </div>
+        </div>
+      </header>
+
+      <main className="mx-auto w-full max-w-5xl flex-1 px-6 py-10">
+        <div className="mb-8">
+          <h1 className="text-2xl font-semibold tracking-tight">Panel principal</h1>
+          <p className="mt-1 text-muted-foreground">
+            Bienvenido de nuevo, Doctor.
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        <Separator className="mb-8" />
+
+        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <Card>
+            <CardHeader>
+              <div className="flex items-center gap-3">
+                <div className="flex size-10 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                  <User className="size-5" />
+                </div>
+                <div>
+                  <CardTitle className="text-base">Cuenta</CardTitle>
+                  <CardDescription className="text-xs">
+                    Detalles de tu perfil
+                  </CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-2 text-sm">
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">Correo electrónico</span>
+                <span className="font-medium truncate max-w-[180px]">
+                  {user.email}
+                </span>
+              </div>
+              <div className="flex items-center justify-between">
+                <span className="text-muted-foreground">Estado</span>
+                <Badge variant="secondary" className="text-xs">
+                  Activo
+                </Badge>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </main>
+
+      <footer className="border-t">
+        <div className="mx-auto flex h-14 max-w-5xl items-center justify-center px-6 text-sm text-muted-foreground">
+          © {new Date().getFullYear()} IMI. Todos los derechos reservados.
+        </div>
+      </footer>
     </div>
   );
 }
