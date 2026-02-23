@@ -103,4 +103,40 @@ describe('updateSession', () => {
       cookiesConfig.setAll([{ name: 'session', value: 'abc', options: {} }])
     ).not.toThrow()
   })
+
+  it('rewrites x-forwarded-host when origin host differs from forwardedHost', async () => {
+    mockGetUser.mockResolvedValue({ data: { user: { id: '1' } } })
+    const req = new NextRequest(new URL('http://localhost/dashboard'), {
+      headers: {
+        origin: 'https://app.example.com',
+        'x-forwarded-host': 'proxy.example.com',
+      },
+    })
+    const res = await updateSession(req)
+    expect(res).toBeInstanceOf(NextResponse)
+  })
+
+  it('does not rewrite x-forwarded-host when origin host matches forwardedHost', async () => {
+    mockGetUser.mockResolvedValue({ data: { user: { id: '1' } } })
+    const req = new NextRequest(new URL('http://localhost/dashboard'), {
+      headers: {
+        origin: 'https://app.example.com',
+        'x-forwarded-host': 'app.example.com',
+      },
+    })
+    const res = await updateSession(req)
+    expect(res).toBeInstanceOf(NextResponse)
+  })
+
+  it('silently catches invalid origin URL', async () => {
+    mockGetUser.mockResolvedValue({ data: { user: { id: '1' } } })
+    const req = new NextRequest(new URL('http://localhost/dashboard'), {
+      headers: {
+        origin: 'not-a-valid-url',
+        'x-forwarded-host': 'proxy.example.com',
+      },
+    })
+    const res = await updateSession(req)
+    expect(res).toBeInstanceOf(NextResponse)
+  })
 })

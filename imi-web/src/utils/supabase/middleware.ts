@@ -3,8 +3,22 @@ import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
 
 export async function updateSession(request: NextRequest) {
+  const requestHeaders = new Headers(request.headers);
+
+  const origin = requestHeaders.get("origin");
+  const forwardedHost = requestHeaders.get("x-forwarded-host");
+  if (origin && forwardedHost) {
+    try {
+      const originHost = new URL(origin).host;
+      if (originHost !== forwardedHost) {
+        requestHeaders.set("x-forwarded-host", originHost);
+      }
+    } catch {
+    }
+  }
+
   let supabaseResponse = NextResponse.next({
-    request,
+    request: { headers: requestHeaders },
   });
 
   const supabase = createServerClient(
