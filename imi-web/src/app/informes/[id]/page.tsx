@@ -17,7 +17,7 @@ import {
   Loader2,
 } from "lucide-react";
 import Link from "next/link";
-import { getPdfDownloadUrl } from "@/actions/informes";
+import { getPdfDownloadUrl, generateAndSavePdf, regeneratePdf } from "@/actions/informes";
 import { WhatsAppButton } from "@/components/whatsapp-button";
 
 interface Props {
@@ -107,7 +107,14 @@ export default async function InformePage({ params }: Props) {
   const StatusIcon = status.icon;
 
   let pdfSignedUrl: string | null = null;
-  if (informe.pdf_path) {
+  if (informe.status === "completed" && !informe.pdf_path && informe.informe_paciente) {
+    const generated = await generateAndSavePdf(id);
+    if ("error" in generated) {
+      console.error("generateAndSavePdf error:", generated.error);
+    } else if (generated.signedUrl) {
+      pdfSignedUrl = generated.signedUrl;
+    }
+  } else if (informe.pdf_path) {
     pdfSignedUrl = await getPdfDownloadUrl(informe.pdf_path);
   }
 
@@ -144,19 +151,30 @@ export default async function InformePage({ params }: Props) {
             </p>
           </div>
 
-          {informe.status === "completed" && pdfSignedUrl && (
+          {informe.status === "completed" && (
             <div className="flex gap-2 flex-wrap">
-              <Button variant="outline" size="sm" asChild>
-                <a href={pdfSignedUrl} target="_blank" rel="noopener noreferrer">
-                  <Download className="size-4 mr-1.5" />
-                  Descargar PDF
-                </a>
-              </Button>
-              <WhatsAppButton
-                phone={whatsappPhone}
-                patientName={patient.name}
-                pdfUrl={pdfSignedUrl}
-              />
+              {pdfSignedUrl ? (
+                <>
+                  <Button variant="outline" size="sm" asChild>
+                    <a href={pdfSignedUrl} target="_blank" rel="noopener noreferrer">
+                      <Download className="size-4 mr-1.5" />
+                      Ver PDF
+                    </a>
+                  </Button>
+                  <WhatsAppButton
+                    phone={whatsappPhone}
+                    patientName={patient.name}
+                    pdfUrl={pdfSignedUrl}
+                  />
+                </>
+              ) : (
+                <form action={regeneratePdf.bind(null, id)}>
+                  <Button variant="outline" size="sm" type="submit">
+                    <Download className="size-4 mr-1.5" />
+                    Generar PDF
+                  </Button>
+                </form>
+              )}
             </div>
           )}
         </div>

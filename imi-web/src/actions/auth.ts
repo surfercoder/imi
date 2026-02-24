@@ -45,6 +45,9 @@ export async function signup(
     email: formData.get("email"),
     password: formData.get("password"),
     confirmPassword: formData.get("confirmPassword"),
+    matricula: formData.get("matricula"),
+    phone: formData.get("phone"),
+    especialidad: formData.get("especialidad"),
   };
 
   const parsed = signupSchema.safeParse(raw);
@@ -61,6 +64,11 @@ export async function signup(
     password: parsed.data.password,
     options: {
       emailRedirectTo: `${origin}/auth/confirm`,
+      data: {
+        matricula: parsed.data.matricula,
+        phone: parsed.data.phone,
+        especialidad: parsed.data.especialidad,
+      },
     },
   });
 

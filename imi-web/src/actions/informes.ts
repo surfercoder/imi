@@ -151,9 +151,10 @@ INFORME PARA EL PACIENTE (informe_paciente):
         });
 
         const pdfFileName = `${user.id}/${informeId}/informe-paciente.pdf`;
+        const pdfBlob = new Blob([pdfBytes.buffer as ArrayBuffer], { type: "application/pdf" });
         const { error: pdfUploadError } = await supabase.storage
           .from("informes-pdf")
-          .upload(pdfFileName, pdfBytes, {
+          .upload(pdfFileName, pdfBlob, {
             contentType: "application/pdf",
             upsert: true,
           });
@@ -234,4 +235,70 @@ export async function getPdfDownloadUrl(pdfPath: string) {
     .from("informes-pdf")
     .createSignedUrl(pdfPath, 3600);
   return data?.signedUrl ?? null;
+}
+
+export async function regeneratePdf(informeId: string) {
+  await generateAndSavePdf(informeId);
+  revalidatePath(`/informes/${informeId}`);
+}
+
+export async function generateAndSavePdf(informeId: string) {
+  const supabase = await createClient();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  if (!user) return { error: "No autenticado" };
+
+  const { data: informeData, error: fetchError } = await supabase
+    .from("informes")
+    .select("*, patients(*)")
+    .eq("id", informeId)
+    .eq("doctor_id", user.id)
+    .single();
+
+  if (fetchError || !informeData) return { error: "Informe no encontrado" };
+  if (informeData.status !== "completed") return { error: "El informe no está completado" };
+  if (!informeData.informe_paciente) return { error: "Sin contenido para el paciente" };
+
+  try {
+    const patient = (informeData as { patients: { name: string; phone: string } }).patients;
+    const pdfBytes = await generateInformePDF({
+      patientName: patient.name,
+      patientPhone: patient.phone,
+      date: new Date(informeData.created_at).toLocaleDateString("es-AR", {
+        day: "2-digit",
+        month: "long",
+        year: "numeric",
+      }),
+      content: informeData.informe_paciente,
+    });
+
+    const pdfFileName = `${user.id}/${informeId}/informe-paciente.pdf`;
+    const pdfBlob = new Blob([pdfBytes.buffer as ArrayBuffer], { type: "application/pdf" });
+    const { error: uploadError } = await supabase.storage
+      .from("informes-pdf")
+      .upload(pdfFileName, pdfBlob, {
+        contentType: "application/pdf",
+        upsert: true,
+      });
+
+    if (uploadError) return { error: uploadError.message };
+
+    await supabase
+      .from("informes")
+      .update({ pdf_path: pdfFileName })
+      .eq("id", informeId)
+      .eq("doctor_id", user.id);
+
+    revalidatePath(`/informes/${informeId}`);
+
+    const { data: signed } = await supabase.storage
+      .from("informes-pdf")
+      .createSignedUrl(pdfFileName, 3600);
+
+    return { signedUrl: signed?.signedUrl ?? null };
+  } catch (err) {
+    const message = err instanceof Error ? err.message : "Error desconocido";
+    return { error: message };
+  }
 }

@@ -21,8 +21,16 @@ jest.mock('@/utils/supabase/server', () => ({
   ),
 }))
 
+const mockGenerateAndSavePdf = jest.fn()
+
+jest.mock('next/cache', () => ({
+  revalidatePath: jest.fn(),
+}))
+
 jest.mock('@/actions/informes', () => ({
   getPdfDownloadUrl: (...args: unknown[]) => mockGetPdfDownloadUrl(...args),
+  generateAndSavePdf: (...args: unknown[]) => mockGenerateAndSavePdf(...args),
+  regeneratePdf: jest.fn(),
 }))
 
 jest.mock('next/link', () => {
@@ -154,7 +162,7 @@ describe('InformePage', () => {
     mockFrom.mockReturnValue(chain)
     mockGetPdfDownloadUrl.mockResolvedValue('https://signed.url/pdf')
     render(await InformePage({ params: Promise.resolve({ id: 'i-1' }) }))
-    expect(screen.getByRole('link', { name: /Descargar PDF/i })).toBeInTheDocument()
+    expect(screen.getByRole('link', { name: /Ver PDF/i })).toBeInTheDocument()
     expect(screen.getByRole('button', { name: /Enviar por WhatsApp/i })).toBeInTheDocument()
   })
 
@@ -162,8 +170,28 @@ describe('InformePage', () => {
     mockGetUser.mockResolvedValue({ data: { user: mockUser } })
     const chain = makeChain({ data: { ...completedInforme, pdf_path: null }, error: null })
     mockFrom.mockReturnValue(chain)
+    mockGenerateAndSavePdf.mockResolvedValue({ signedUrl: null })
     render(await InformePage({ params: Promise.resolve({ id: 'i-1' }) }))
-    expect(screen.queryByRole('link', { name: /Descargar PDF/i })).not.toBeInTheDocument()
+    expect(screen.queryByRole('link', { name: /Ver PDF/i })).not.toBeInTheDocument()
+  })
+
+  it('renders PDF link when completed with no pdf_path but generateAndSavePdf returns signedUrl', async () => {
+    mockGetUser.mockResolvedValue({ data: { user: mockUser } })
+    const chain = makeChain({ data: { ...completedInforme, pdf_path: null }, error: null })
+    mockFrom.mockReturnValue(chain)
+    mockGenerateAndSavePdf.mockResolvedValue({ signedUrl: 'https://generated.url/pdf' })
+    render(await InformePage({ params: Promise.resolve({ id: 'i-1' }) }))
+    expect(screen.getByRole('link', { name: /Ver PDF/i })).toBeInTheDocument()
+  })
+
+  it('renders Generar PDF button when completed, no pdf_path and generateAndSavePdf returns error', async () => {
+    mockGetUser.mockResolvedValue({ data: { user: mockUser } })
+    const chain = makeChain({ data: { ...completedInforme, pdf_path: null }, error: null })
+    mockFrom.mockReturnValue(chain)
+    mockGenerateAndSavePdf.mockResolvedValue({ error: 'PDF generation failed' })
+    render(await InformePage({ params: Promise.resolve({ id: 'i-1' }) }))
+    expect(screen.queryByRole('link', { name: /Ver PDF/i })).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /Generar PDF/i })).toBeInTheDocument()
   })
 
   it('does not render PDF buttons when pdfSignedUrl is null', async () => {

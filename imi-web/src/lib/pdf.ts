@@ -7,6 +7,10 @@ interface GenerateInformePDFOptions {
   content: string;
 }
 
+function sanitizeForPdf(text: string): string {
+  return text.replace(/[^\x00-\xFF]/g, "").replace(/\s+/g, " ").trim();
+}
+
 export async function generateInformePDF({
   patientName,
   patientPhone,
@@ -16,6 +20,10 @@ export async function generateInformePDF({
   const pdfDoc = await PDFDocument.create();
   const helveticaBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
   const helvetica = await pdfDoc.embedFont(StandardFonts.Helvetica);
+
+  patientName = sanitizeForPdf(patientName);
+  patientPhone = sanitizeForPdf(patientPhone);
+  content = content.replace(/[^\x00-\xFF]/g, " ");
 
   const pageWidth = 595;
   const pageHeight = 842;

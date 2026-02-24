@@ -43,6 +43,12 @@ describe('SignupForm — default state', () => {
     expect(screen.getByLabelText('Confirmar contraseña')).toBeInTheDocument()
   })
 
+  it('renders matricula and especialidad fields', () => {
+    render(<SignupForm />)
+    expect(screen.getByLabelText('Matrícula')).toBeInTheDocument()
+    expect(screen.getByLabelText('Especialidad')).toBeInTheDocument()
+  })
+
   it('renders the submit button', () => {
     render(<SignupForm />)
     expect(screen.getByRole('button', { name: 'Crear cuenta' })).toBeInTheDocument()
@@ -65,6 +71,10 @@ describe('SignupForm — default state', () => {
     const user = userEvent.setup()
     render(<SignupForm />)
     await user.type(screen.getByLabelText('Correo electrónico'), 'doctor@hospital.com')
+    await user.type(screen.getByLabelText('Matrícula'), '123456')
+    await user.type(screen.getByLabelText('Teléfono'), '+54 11 1234-5678')
+    await user.click(screen.getByRole('combobox', { name: /especialidad/i }))
+    await user.click(screen.getByRole('option', { name: 'Cardiología' }))
     await user.type(screen.getByLabelText('Contraseña'), 'password123')
     await user.type(screen.getByLabelText('Confirmar contraseña'), 'password123')
     await user.click(screen.getByRole('button', { name: 'Crear cuenta' }))

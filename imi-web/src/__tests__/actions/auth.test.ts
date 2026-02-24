@@ -99,6 +99,9 @@ describe('signup', () => {
     fd.set('email', 'doctor@hospital.com')
     fd.set('password', 'short')
     fd.set('confirmPassword', 'short')
+    fd.set('matricula', '123456')
+    fd.set('phone', '+54 11 1234-5678')
+    fd.set('especialidad', 'Cardiología')
     const result = await signup(null, fd)
     expect(result).toEqual({ error: 'La contraseña debe tener al menos 8 caracteres' })
   })
@@ -108,6 +111,9 @@ describe('signup', () => {
     fd.set('email', 'doctor@hospital.com')
     fd.set('password', 'password123')
     fd.set('confirmPassword', 'different')
+    fd.set('matricula', '123456')
+    fd.set('phone', '+54 11 1234-5678')
+    fd.set('especialidad', 'Cardiología')
     const result = await signup(null, fd)
     expect(result).toEqual({ error: 'Las contraseñas no coinciden' })
   })
@@ -118,6 +124,9 @@ describe('signup', () => {
     fd.set('email', 'doctor@hospital.com')
     fd.set('password', 'password123')
     fd.set('confirmPassword', 'password123')
+    fd.set('matricula', '123456')
+    fd.set('phone', '+54 11 1234-5678')
+    fd.set('especialidad', 'Cardiología')
     const result = await signup(null, fd)
     expect(result).toEqual({ error: 'Email already registered' })
   })
@@ -128,11 +137,17 @@ describe('signup', () => {
     fd.set('email', 'doctor@hospital.com')
     fd.set('password', 'password123')
     fd.set('confirmPassword', 'password123')
+    fd.set('matricula', '123456')
+    fd.set('phone', '+54 11 1234-5678')
+    fd.set('especialidad', 'Cardiología')
     const result = await signup(null, fd)
     expect(result).toEqual({ success: true })
     expect(mockSignUp).toHaveBeenCalledWith(
       expect.objectContaining({
-        options: { emailRedirectTo: 'http://localhost:3001/auth/confirm' },
+        options: expect.objectContaining({
+          emailRedirectTo: 'http://localhost:3001/auth/confirm',
+          data: { matricula: '123456', phone: '+54 11 1234-5678', especialidad: 'Cardiología' },
+        }),
       })
     )
   })
@@ -144,10 +159,15 @@ describe('signup', () => {
     fd.set('email', 'doctor@hospital.com')
     fd.set('password', 'password123')
     fd.set('confirmPassword', 'password123')
+    fd.set('matricula', '123456')
+    fd.set('phone', '+54 11 1234-5678')
+    fd.set('especialidad', 'Cardiología')
     await signup(null, fd)
     expect(mockSignUp).toHaveBeenCalledWith(
       expect.objectContaining({
-        options: { emailRedirectTo: '/auth/confirm' },
+        options: expect.objectContaining({
+          emailRedirectTo: '/auth/confirm',
+        }),
       })
     )
   })

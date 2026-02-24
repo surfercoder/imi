@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState, useTransition } from "react";
+import { useState, useActionState, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -20,19 +20,41 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
 import { signup } from "@/actions/auth";
-import { signupSchema } from "@/schemas/auth";
+import { signupSchema, ESPECIALIDADES } from "@/schemas/auth";
 import type { SignupFormValues } from "@/types/auth";
-import { Loader2, CheckCircle2 } from "lucide-react";
+import { Loader2, CheckCircle2, ChevronsUpDown, Check } from "lucide-react";
+import { cn } from "@/lib/utils";
 import Link from "next/link";
 
 export function SignupForm() {
   const [state, formAction] = useActionState(signup, null);
   const [isPending, startTransition] = useTransition();
+  const [especialidadOpen, setEspecialidadOpen] = useState(false);
 
   const form = useForm<SignupFormValues>({
     resolver: zodResolver(signupSchema),
-    defaultValues: { email: "", password: "", confirmPassword: "" },
+    defaultValues: {
+      email: "",
+      password: "",
+      confirmPassword: "",
+      matricula: "",
+      phone: "",
+      especialidad: "",
+    },
   });
 
   function onSubmit(values: SignupFormValues) {
@@ -40,6 +62,9 @@ export function SignupForm() {
     formData.set("email", values.email);
     formData.set("password", values.password);
     formData.set("confirmPassword", values.confirmPassword);
+    formData.set("matricula", values.matricula);
+    formData.set("phone", values.phone);
+    formData.set("especialidad", values.especialidad);
     startTransition(() => formAction(formData));
   }
 
@@ -97,6 +122,106 @@ export function SignupForm() {
                       {...field}
                     />
                   </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="matricula"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Matrícula</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="text"
+                      inputMode="numeric"
+                      placeholder="Ej: 123456"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="phone"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Teléfono</FormLabel>
+                  <FormControl>
+                    <Input
+                      type="tel"
+                      inputMode="tel"
+                      placeholder="Ej: +54 11 1234-5678"
+                      autoComplete="tel"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="especialidad"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel>Especialidad</FormLabel>
+                  <Popover
+                    open={especialidadOpen}
+                    onOpenChange={setEspecialidadOpen}
+                  >
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant="outline"
+                          role="combobox"
+                          aria-expanded={especialidadOpen}
+                          className={cn(
+                            "w-full justify-between font-normal",
+                            !field.value && "text-muted-foreground"
+                          )}
+                        >
+                          {field.value || "Seleccioná tu especialidad"}
+                          <ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                      <Command>
+                        <CommandInput placeholder="Buscar especialidad…" />
+                        <CommandList>
+                          <CommandEmpty>
+                            No se encontró la especialidad.
+                          </CommandEmpty>
+                          <CommandGroup>
+                            {ESPECIALIDADES.map((esp) => (
+                              <CommandItem
+                                key={esp}
+                                value={esp}
+                                onSelect={(val) => {
+                                  field.onChange(val);
+                                  setEspecialidadOpen(false);
+                                }}
+                              >
+                                <Check
+                                  className={cn(
+                                    "mr-2 size-4",
+                                    field.value === esp
+                                      ? "opacity-100"
+                                      : "opacity-0"
+                                  )}
+                                />
+                                {esp}
+                              </CommandItem>
+                            ))}
+                          </CommandGroup>
+                        </CommandList>
+                      </Command>
+                    </PopoverContent>
+                  </Popover>
                   <FormMessage />
                 </FormItem>
               )}
