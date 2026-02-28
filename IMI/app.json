@@ -10,9 +10,13 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.agustincassani.IMI"
+      "bundleIdentifier": "com.agustincassani.IMI",
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "IMI necesita acceso al micrófono para grabar las consultas médicas."
+      }
     },
     "android": {
+      "permissions": ["android.permission.RECORD_AUDIO"],
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
         "foregroundImage": "./assets/images/android-icon-foreground.png",

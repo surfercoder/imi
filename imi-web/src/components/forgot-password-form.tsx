@@ -45,7 +45,7 @@ export function ForgotPasswordForm() {
     return (
       <Card>
         <CardContent className="flex flex-col items-center gap-4 py-10 text-center">
-          <div className="flex size-12 items-center justify-center rounded-full bg-blue-100 text-blue-600">
+          <div className="flex size-12 items-center justify-center rounded-full bg-primary/15 text-primary">
             <MailCheck className="size-6" />
           </div>
           <div>

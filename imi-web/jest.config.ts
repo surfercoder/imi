@@ -12,6 +12,7 @@ const config: Config = {
   setupFilesAfterEnv: ['<rootDir>/jest.setup.ts'],
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1',
+    '^react-signature-canvas$': '<rootDir>/src/__mocks__/react-signature-canvas.tsx',
   },
   testMatch: [
     '**/__tests__/**/*.[jt]s?(x)',

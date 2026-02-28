@@ -257,6 +257,7 @@ describe('AudioRecorder — stop and process', () => {
     mockGetUserMedia.mockResolvedValue(mockStream)
     mockUpload.mockRejectedValue(new Error('Network error'))
     mockProcessInforme.mockResolvedValue({ success: true })
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {})
 
     jest.useFakeTimers()
     const user = userEvent.setup({ advanceTimers: jest.advanceTimersByTime })
@@ -267,6 +268,8 @@ describe('AudioRecorder — stop and process', () => {
     await waitFor(() => {
       expect(screen.getByText('¡Informes generados!')).toBeInTheDocument()
     })
+    expect(warnSpy).toHaveBeenCalledWith('Audio upload failed, continuing without it:', expect.any(Error))
+    warnSpy.mockRestore()
     jest.useRealTimers()
   })
 })

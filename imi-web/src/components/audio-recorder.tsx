@@ -302,11 +302,11 @@ export function AudioRecorder({ informeId, doctorId }: AudioRecorderProps) {
       <div
         className={cn(
           "relative flex flex-col items-center justify-center rounded-2xl border-2 p-10 transition-all duration-300",
-          isActive && "border-destructive/60 bg-destructive/5",
-          isPaused && "border-amber-400/60 bg-amber-50/50",
-          state === "idle" && "border-dashed border-muted-foreground/30 bg-muted/20",
-          state === "done" && "border-emerald-400/60 bg-emerald-50/50",
-          state === "error" && "border-destructive/60 bg-destructive/5",
+          isActive && "border-destructive/50 bg-destructive/5",
+          isPaused && "border-primary/40 bg-primary/5",
+          state === "idle" && "border-dashed border-border bg-muted",
+          state === "done" && "border-accent/50 bg-accent/5",
+          state === "error" && "border-destructive/50 bg-destructive/5",
           isProcessing && "border-primary/40 bg-primary/5"
         )}
       >
@@ -321,9 +321,9 @@ export function AudioRecorder({ informeId, doctorId }: AudioRecorderProps) {
           className={cn(
             "mb-4 flex size-20 items-center justify-center rounded-full transition-all duration-300",
             isActive && "bg-destructive/15 text-destructive",
-            isPaused && "bg-amber-100 text-amber-600",
-            state === "idle" && "bg-muted text-muted-foreground",
-            state === "done" && "bg-emerald-100 text-emerald-600",
+            isPaused && "bg-primary/10 text-primary",
+            state === "idle" && "bg-secondary text-muted-foreground",
+            state === "done" && "bg-accent/15 text-accent",
             state === "error" && "bg-destructive/15 text-destructive",
             isProcessing && "bg-primary/10 text-primary"
           )}
@@ -346,8 +346,8 @@ export function AudioRecorder({ informeId, doctorId }: AudioRecorderProps) {
         <div className="text-center">
           {state === "idle" && (
             <>
-              <p className="text-base font-medium">Listo para grabar</p>
-              <p className="mt-1 text-sm text-muted-foreground">
+              <p className="text-base font-medium text-card-foreground">Listo para grabar</p>
+              <p className="mt-1 text-sm text-card-foreground/60">
                 Presione el botón para iniciar la consulta
               </p>
             </>
@@ -359,7 +359,7 @@ export function AudioRecorder({ informeId, doctorId }: AudioRecorderProps) {
           )}
           {isActive && (
             <>
-              <p className="text-2xl font-mono font-semibold tabular-nums text-destructive">
+              <p className="text-2xl font-mono font-semibold tabular-nums text-destructive tracking-wider">
                 {formatDuration(duration)}
               </p>
               <p className="mt-1 text-sm text-muted-foreground">Grabando...</p>
@@ -367,7 +367,7 @@ export function AudioRecorder({ informeId, doctorId }: AudioRecorderProps) {
           )}
           {isPaused && (
             <>
-              <p className="text-2xl font-mono font-semibold tabular-nums text-amber-600">
+              <p className="text-2xl font-mono font-semibold tabular-nums text-primary tracking-wider">
                 {formatDuration(duration)}
               </p>
               <p className="mt-1 text-sm text-muted-foreground">En pausa</p>
@@ -390,7 +390,7 @@ export function AudioRecorder({ informeId, doctorId }: AudioRecorderProps) {
           )}
           {state === "done" && (
             <>
-              <p className="text-base font-medium text-emerald-700">
+              <p className="text-base font-medium text-accent">
                 ¡Informes generados!
               </p>
               <p className="mt-1 text-sm text-muted-foreground">
@@ -421,11 +421,11 @@ export function AudioRecorder({ informeId, doctorId }: AudioRecorderProps) {
       )}
 
       {(isActive || isPaused) && transcript && (
-        <div className="rounded-lg border bg-muted/30 p-4 max-h-40 overflow-y-auto">
+        <div className="rounded-lg border border-border bg-muted p-4 max-h-40 overflow-y-auto">
           <p className="text-xs font-medium text-muted-foreground mb-1.5">
             Transcripción en tiempo real
           </p>
-          <p className="text-sm leading-relaxed">{transcript}</p>
+          <p className="text-sm leading-relaxed text-card-foreground">{transcript}</p>
         </div>
       )}
 
@@ -433,6 +433,7 @@ export function AudioRecorder({ informeId, doctorId }: AudioRecorderProps) {
         {state === "idle" && (
           <Button
             size="lg"
+            variant="destructive"
             onClick={startRecording}
             className="gap-2 px-8"
           >

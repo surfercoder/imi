@@ -42,77 +42,80 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
+  /* IMI Brand Palette */
+  --color-brand-violet: #2C2754;
+  --color-brand-coral: #FF6047;
+  --color-brand-blue: #5877C6;
+  --color-brand-teal: #59C3C3;
+  --color-brand-gray: #EBEBEB;
 }
+
+/* ─── IMI Design System ─────────────────────────────────────────────────────
+   Background  : #2C2754  deep violet  — page background (dark)
+   Card/Popover: #FFFFFF  white        — content containers (light, dark text)
+   Primary     : #5877C6  royal blue   — buttons, links, focus
+   Accent      : #59C3C3  teal         — success, hover highlights
+   Coral       : #FF6047  coral/orange — recording, destructive, key accents
+   Muted       : #EBEBEB  light gray   — subtle backgrounds inside cards
+   ─────────────────────────────────────────────────────────────────────────── */
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
-  --accent-foreground: oklch(0.208 0.042 265.755);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.704 0.04 256.788);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.984 0.003 247.858);
-  --sidebar-foreground: oklch(0.129 0.042 264.695);
-  --sidebar-primary: oklch(0.208 0.042 265.755);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.968 0.007 247.896);
-  --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
-  --sidebar-border: oklch(0.929 0.013 255.508);
-  --sidebar-ring: oklch(0.704 0.04 256.788);
-}
 
-.dark {
-  --background: oklch(0.129 0.042 264.695);
-  --foreground: oklch(0.984 0.003 247.858);
-  --card: oklch(0.208 0.042 265.755);
-  --card-foreground: oklch(0.984 0.003 247.858);
-  --popover: oklch(0.208 0.042 265.755);
-  --popover-foreground: oklch(0.984 0.003 247.858);
-  --primary: oklch(0.929 0.013 255.508);
-  --primary-foreground: oklch(0.208 0.042 265.755);
-  --secondary: oklch(0.279 0.041 260.031);
-  --secondary-foreground: oklch(0.984 0.003 247.858);
-  --muted: oklch(0.279 0.041 260.031);
-  --muted-foreground: oklch(0.704 0.04 256.788);
-  --accent: oklch(0.279 0.041 260.031);
-  --accent-foreground: oklch(0.984 0.003 247.858);
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(0.985 0 0);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.551 0.027 264.364);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.208 0.042 265.755);
-  --sidebar-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.279 0.041 260.031);
-  --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.551 0.027 264.364);
+  /* Page surface — deep violet stays as the backdrop */
+  --background: #2C2754;
+  --foreground: #EBEBEB;
+
+  /* Cards — white with near-black text for strong legibility */
+  --card: #ffffff;
+  --card-foreground: #1a1733;
+
+  /* Popovers / dropdowns — white */
+  --popover: #ffffff;
+  --popover-foreground: #1a1733;
+
+  /* Primary — royal blue */
+  --primary: #5877C6;
+  --primary-foreground: #ffffff;
+
+  /* Secondary — light gray surface (inside cards) */
+  --secondary: #EBEBEB;
+  --secondary-foreground: #1a1733;
+
+  /* Muted — very light gray for subtle fills */
+  --muted: #f4f4f6;
+  --muted-foreground: #4a4868;
+
+  /* Accent — teal for success & hover states */
+  --accent: #59C3C3;
+  --accent-foreground: #ffffff;
+
+  /* Destructive / Coral — errors, recording, key highlights */
+  --destructive: #FF6047;
+  --destructive-foreground: #ffffff;
+
+  /* Borders & inputs — visible on white cards */
+  --border: #c8c8dc;
+  --input: #f0f0f8;
+  --ring: #5877C6;
+
+  /* Charts */
+  --chart-1: #5877C6;
+  --chart-2: #59C3C3;
+  --chart-3: #FF6047;
+  --chart-4: #a89fc4;
+  --chart-5: #7a6faa;
+
+  /* Sidebar */
+  --sidebar: #231f47;
+  --sidebar-foreground: #EBEBEB;
+  --sidebar-primary: #5877C6;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #59C3C3;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: rgba(235, 235, 235, 0.1);
+  --sidebar-ring: #5877C6;
 }
 
 @layer base {

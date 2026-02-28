@@ -3,6 +3,19 @@ import { createServerClient } from "@supabase/ssr";
 import { type NextRequest, NextResponse } from "next/server";
 
 export async function updateSession(request: NextRequest) {
+  const cookieHeader = request.headers.get("cookie") ?? "";
+  if (cookieHeader.length > 4096) {
+    const clearResponse = NextResponse.redirect(
+      new URL("/login", request.url)
+    );
+    request.cookies.getAll().forEach(({ name }) => {
+      if (name.startsWith("sb-")) {
+        clearResponse.cookies.delete(name);
+      }
+    });
+    return clearResponse;
+  }
+
   const requestHeaders = new Headers(request.headers);
 
   const origin = requestHeaders.get("origin");

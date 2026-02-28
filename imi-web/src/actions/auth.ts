@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 import { createClient } from "@/utils/supabase/server";
+import { createAdminClient } from "@/utils/supabase/admin";
 import {
   loginSchema,
   signupSchema,
@@ -41,13 +42,18 @@ export async function signup(
   _prevState: ActionResult | null,
   formData: FormData
 ): Promise<ActionResult> {
+  const g = (key: string) => formData.get(key) ?? "";
+  const opt = (key: string) => { const v = g(key); return v === "" ? undefined : v; };
   const raw = {
-    email: formData.get("email"),
-    password: formData.get("password"),
-    confirmPassword: formData.get("confirmPassword"),
-    matricula: formData.get("matricula"),
-    phone: formData.get("phone"),
-    especialidad: formData.get("especialidad"),
+    name: opt("name"),
+    email: g("email"),
+    password: g("password"),
+    confirmPassword: g("confirmPassword"),
+    dni: opt("dni"),
+    matricula: g("matricula"),
+    phone: g("phone"),
+    especialidad: g("especialidad"),
+    firmaDigital: opt("firmaDigital"),
   };
 
   const parsed = signupSchema.safeParse(raw);
@@ -59,7 +65,7 @@ export async function signup(
   const headersList = await headers();
   const origin = headersList.get("origin") ?? "";
 
-  const { error } = await supabase.auth.signUp({
+  const { data: signUpData, error } = await supabase.auth.signUp({
     email: parsed.data.email,
     password: parsed.data.password,
     options: {
@@ -74,6 +80,14 @@ export async function signup(
 
   if (error) {
     return { error: error.message };
+  }
+
+  if (signUpData?.user && parsed.data.firmaDigital) {
+    const admin = createAdminClient();
+    await admin
+      .from("doctors")
+      .update({ firma_digital: parsed.data.firmaDigital })
+      .eq("id", signUpData.user.id);
   }
 
   return { success: true };

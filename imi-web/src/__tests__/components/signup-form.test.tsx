@@ -43,9 +43,11 @@ describe('SignupForm — default state', () => {
     expect(screen.getByLabelText('Confirmar contraseña')).toBeInTheDocument()
   })
 
-  it('renders matricula and especialidad fields', () => {
+  it('renders name, matricula, phone and especialidad fields', () => {
     render(<SignupForm />)
+    expect(screen.getByLabelText('Nombre completo')).toBeInTheDocument()
     expect(screen.getByLabelText('Matrícula')).toBeInTheDocument()
+    expect(screen.getByLabelText('Teléfono')).toBeInTheDocument()
     expect(screen.getByLabelText('Especialidad')).toBeInTheDocument()
   })
 
@@ -70,6 +72,7 @@ describe('SignupForm — default state', () => {
   it('calls startTransition when form is submitted with valid data', async () => {
     const user = userEvent.setup()
     render(<SignupForm />)
+    await user.type(screen.getByLabelText('Nombre completo'), 'Dr. Juan Pérez')
     await user.type(screen.getByLabelText('Correo electrónico'), 'doctor@hospital.com')
     await user.type(screen.getByLabelText('Matrícula'), '123456')
     await user.type(screen.getByLabelText('Teléfono'), '+54 11 1234-5678')

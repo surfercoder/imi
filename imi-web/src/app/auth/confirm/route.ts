@@ -5,6 +5,10 @@ import { createClient } from "@/utils/supabase/server";
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
 
+  if (searchParams.get("error")) {
+    return NextResponse.redirect(`${origin}/auth/auth-error`);
+  }
+
   const token_hash = searchParams.get("token_hash");
   const type = searchParams.get("type") as EmailOtpType | null;
   const code = searchParams.get("code");

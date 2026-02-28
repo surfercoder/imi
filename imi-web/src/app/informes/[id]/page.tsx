@@ -122,7 +122,7 @@ export default async function InformePage({ params }: Props) {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <header className="border-b">
+      <header className="border-b border-border/60 bg-background/95 backdrop-blur-sm sticky top-0 z-10">
         <div className="mx-auto flex h-14 max-w-5xl items-center gap-3 px-6">
           <Button variant="ghost" size="sm" asChild>
             <Link href="/">
@@ -145,7 +145,7 @@ export default async function InformePage({ params }: Props) {
             <h1 className="text-2xl font-semibold tracking-tight">
               Informe de consulta
             </h1>
-            <p className="mt-1 text-sm text-muted-foreground flex items-center gap-1.5">
+            <p className="mt-1 text-sm text-foreground/60 flex items-center gap-1.5">
               <Clock className="size-3.5" />
               {createdAt}
             </p>
@@ -179,13 +179,13 @@ export default async function InformePage({ params }: Props) {
           )}
         </div>
 
-        <div className="rounded-xl border bg-card p-5">
+        <div className="rounded-xl border bg-card p-5 shadow-sm">
           <div className="flex items-start gap-4">
-            <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-destructive/10 text-destructive">
               <User className="size-5" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="font-semibold text-base">{patient.name}</p>
+              <p className="font-semibold text-base text-card-foreground">{patient.name}</p>
               <div className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
                 <span className="flex items-center gap-1.5">
                   <Phone className="size-3.5" />
@@ -206,9 +206,9 @@ export default async function InformePage({ params }: Props) {
         </div>
 
         {informe.status === "processing" && (
-          <div className="flex flex-col items-center justify-center rounded-xl border bg-card p-16 text-center">
+          <div className="flex flex-col items-center justify-center rounded-xl border bg-card p-16 text-center shadow-sm">
             <Loader2 className="size-10 text-primary animate-spin mb-4" />
-            <p className="font-medium">Generando informes...</p>
+            <p className="font-medium text-card-foreground">Generando informes...</p>
             <p className="mt-1 text-sm text-muted-foreground">
               La IA está analizando la consulta. Esto puede tomar unos momentos.
             </p>
@@ -227,37 +227,37 @@ export default async function InformePage({ params }: Props) {
 
         {informe.status === "completed" && (
           <div className="grid gap-6 lg:grid-cols-2">
-            <div className="rounded-xl border bg-card overflow-hidden">
-              <div className="flex items-center gap-3 border-b bg-muted/30 px-5 py-4">
+            <div className="rounded-xl border bg-card overflow-hidden shadow-sm">
+              <div className="flex items-center gap-3 border-b bg-primary/5 px-5 py-4">
                 <div className="flex size-8 items-center justify-center rounded-lg bg-primary/10 text-primary">
                   <Stethoscope className="size-4" />
                 </div>
                 <div>
-                  <p className="font-semibold text-sm">Informe médico</p>
+                  <p className="font-semibold text-sm text-card-foreground">Informe médico</p>
                   <p className="text-xs text-muted-foreground">Para el doctor</p>
                 </div>
               </div>
               <div className="p-5">
-                <div className="prose prose-sm max-w-none text-sm leading-relaxed whitespace-pre-wrap text-foreground">
+                <div className="prose prose-sm max-w-none text-sm leading-relaxed whitespace-pre-wrap text-card-foreground">
                   {informe.informe_doctor || "Sin contenido"}
                 </div>
               </div>
             </div>
 
-            <div className="rounded-xl border bg-card overflow-hidden">
-              <div className="flex items-center gap-3 border-b bg-emerald-50/50 px-5 py-4">
-                <div className="flex size-8 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700">
+            <div className="rounded-xl border bg-card overflow-hidden shadow-sm">
+              <div className="flex items-center gap-3 border-b bg-accent/5 px-5 py-4">
+                <div className="flex size-8 items-center justify-center rounded-lg bg-accent/10 text-accent">
                   <MessageCircle className="size-4" />
                 </div>
                 <div>
-                  <p className="font-semibold text-sm">Informe para el paciente</p>
+                  <p className="font-semibold text-sm text-card-foreground">Informe para el paciente</p>
                   <p className="text-xs text-muted-foreground">
                     Se enviará por WhatsApp
                   </p>
                 </div>
               </div>
               <div className="p-5">
-                <div className="prose prose-sm max-w-none text-sm leading-relaxed whitespace-pre-wrap text-foreground">
+                <div className="prose prose-sm max-w-none text-sm leading-relaxed whitespace-pre-wrap text-card-foreground">
                   {informe.informe_paciente || "Sin contenido"}
                 </div>
               </div>
@@ -266,13 +266,13 @@ export default async function InformePage({ params }: Props) {
         )}
 
         {informe.transcript && (
-          <details className="rounded-xl border bg-card">
-            <summary className="flex cursor-pointer items-center gap-2 px-5 py-4 text-sm font-medium hover:bg-muted/30 transition-colors">
+          <details className="rounded-xl border bg-card shadow-sm overflow-hidden">
+            <summary className="flex cursor-pointer items-center gap-2 px-5 py-4 text-sm font-medium text-card-foreground hover:bg-muted transition-colors">
               <FileText className="size-4 text-muted-foreground" />
               Ver transcripción completa
             </summary>
-            <div className="border-t px-5 py-4">
-              <p className="text-sm leading-relaxed whitespace-pre-wrap text-muted-foreground">
+            <div className="border-t bg-muted px-5 py-4">
+              <p className="text-sm leading-relaxed whitespace-pre-wrap text-card-foreground">
                 {informe.transcript}
               </p>
             </div>

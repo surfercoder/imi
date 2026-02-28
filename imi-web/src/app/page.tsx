@@ -31,11 +31,13 @@ export default async function Home() {
 
   return (
     <div className="flex min-h-screen flex-col bg-background">
-      <header className="border-b">
+      <header className="border-b border-border/60 bg-background/95 backdrop-blur-sm sticky top-0 z-10">
         <div className="mx-auto flex h-14 max-w-5xl items-center justify-between px-6">
-          <span className="text-lg font-semibold tracking-tight">IMI</span>
+          <span className="text-lg font-bold tracking-tight text-foreground">
+            IMI
+          </span>
           <div className="flex items-center gap-3">
-            <span className="text-sm text-muted-foreground hidden sm:block">
+            <span className="text-sm text-foreground/60 hidden sm:block">
               {user.email}
             </span>
             <form action={logout}>
@@ -54,7 +56,7 @@ export default async function Home() {
             <h1 className="text-2xl font-semibold tracking-tight">
               Panel principal
             </h1>
-            <p className="mt-1 text-muted-foreground">
+            <p className="mt-1 text-foreground/60">
               Bienvenido de nuevo, Doctor.
             </p>
           </div>
@@ -62,31 +64,31 @@ export default async function Home() {
         </div>
 
         <div className="mb-8 grid gap-4 sm:grid-cols-3">
-          <div className="rounded-xl border bg-card p-5">
+          <div className="rounded-xl border bg-card p-5 shadow-sm">
             <div className="flex items-center gap-3">
-              <div className="flex size-9 items-center justify-center rounded-lg bg-primary/10 text-primary">
+              <div className="flex size-9 items-center justify-center rounded-lg bg-destructive/10 text-destructive">
                 <FileText className="size-4" />
               </div>
               <div>
-                <p className="text-2xl font-bold">{allInformes.length}</p>
+                <p className="text-2xl font-bold text-card-foreground">{allInformes.length}</p>
                 <p className="text-xs text-muted-foreground">Total informes</p>
               </div>
             </div>
           </div>
-          <div className="rounded-xl border bg-card p-5">
+          <div className="rounded-xl border bg-card p-5 shadow-sm">
             <div className="flex items-center gap-3">
-              <div className="flex size-9 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700">
+              <div className="flex size-9 items-center justify-center rounded-lg bg-accent/15 text-accent">
                 <CheckCircle2 className="size-4" />
               </div>
               <div>
-                <p className="text-2xl font-bold">{completedCount}</p>
+                <p className="text-2xl font-bold text-card-foreground">{completedCount}</p>
                 <p className="text-xs text-muted-foreground">Completados</p>
               </div>
             </div>
           </div>
-          <div className="rounded-xl border bg-card p-5">
+          <div className="rounded-xl border bg-card p-5 shadow-sm">
             <div className="flex items-center gap-3">
-              <div className={`flex size-9 items-center justify-center rounded-lg ${errorCount > 0 ? "bg-destructive/10 text-destructive" : "bg-amber-100 text-amber-700"}`}>
+              <div className={`flex size-9 items-center justify-center rounded-lg ${errorCount > 0 ? "bg-destructive/10 text-destructive" : "bg-primary/10 text-primary"}`}>
                 {errorCount > 0 ? (
                   <AlertCircle className="size-4" />
                 ) : (
@@ -94,7 +96,7 @@ export default async function Home() {
                 )}
               </div>
               <div>
-                <p className="text-2xl font-bold">
+                <p className="text-2xl font-bold text-card-foreground">
                   {errorCount > 0 ? errorCount : processingCount}
                 </p>
                 <p className="text-xs text-muted-foreground">
@@ -108,7 +110,7 @@ export default async function Home() {
         <Separator className="mb-6" />
 
         <div className="mb-4 flex items-center justify-between">
-          <h2 className="text-base font-semibold">Informes recientes</h2>
+          <h2 className="text-base font-semibold text-foreground">Informes recientes</h2>
           <Badge variant="secondary" className="text-xs">
             {allInformes.length} total
           </Badge>
@@ -117,8 +119,8 @@ export default async function Home() {
         <InformesList informes={allInformes} />
       </main>
 
-      <footer className="border-t">
-        <div className="mx-auto flex h-14 max-w-5xl items-center justify-center px-6 text-sm text-muted-foreground">
+      <footer className="border-t border-border/60">
+        <div className="mx-auto flex h-14 max-w-5xl items-center justify-center px-6 text-sm text-foreground/50">
           © {new Date().getFullYear()} IMI. Todos los derechos reservados.
         </div>
       </footer>

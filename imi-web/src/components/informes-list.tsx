@@ -33,19 +33,19 @@ const statusConfig = {
     label: "Grabando",
     variant: "secondary" as const,
     icon: Mic,
-    className: "text-amber-600 bg-amber-50 border-amber-200",
+    className: "text-destructive bg-destructive/10 border-destructive/20",
   },
   processing: {
     label: "Procesando",
     variant: "secondary" as const,
     icon: Loader2,
-    className: "text-blue-600 bg-blue-50 border-blue-200",
+    className: "text-primary bg-primary/10 border-primary/20",
   },
   completed: {
     label: "Completado",
     variant: "default" as const,
     icon: FileText,
-    className: "text-emerald-700 bg-emerald-50 border-emerald-200",
+    className: "text-accent bg-accent/10 border-accent/20",
   },
   error: {
     label: "Error",
@@ -58,11 +58,11 @@ const statusConfig = {
 export function InformesList({ informes }: InformesListProps) {
   if (informes.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center rounded-xl border border-dashed bg-muted/20 py-16 text-center">
+      <div className="flex flex-col items-center justify-center rounded-xl border border-dashed border-border bg-card py-16 text-center shadow-sm">
         <div className="flex size-14 items-center justify-center rounded-full bg-muted text-muted-foreground mb-4">
           <FileText className="size-7" />
         </div>
-        <p className="font-medium">Sin informes aún</p>
+        <p className="font-medium text-card-foreground">Sin informes aún</p>
         <p className="mt-1 text-sm text-muted-foreground">
           Cree un nuevo informe para comenzar una consulta.
         </p>
@@ -94,7 +94,7 @@ export function InformesList({ informes }: InformesListProps) {
           <Link
             key={informe.id}
             href={href}
-            className="group flex items-center gap-4 rounded-xl border bg-card px-5 py-4 transition-all hover:border-primary/30 hover:shadow-sm"
+            className="group flex items-center gap-4 rounded-xl border bg-card px-5 py-4 shadow-sm transition-all hover:border-accent hover:shadow-md"
           >
             <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-primary/10 text-primary">
               <User className="size-5" />
@@ -102,7 +102,7 @@ export function InformesList({ informes }: InformesListProps) {
 
             <div className="flex-1 min-w-0">
               <div className="flex items-center gap-2 flex-wrap">
-                <p className="font-medium truncate">
+                <p className="font-medium truncate text-card-foreground">
                   {informe.patients?.name ?? "Paciente desconocido"}
                 </p>
                 <span
@@ -134,7 +134,7 @@ export function InformesList({ informes }: InformesListProps) {
               </div>
             </div>
 
-            <ChevronRight className="size-4 shrink-0 text-muted-foreground transition-transform group-hover:translate-x-0.5" />
+            <ChevronRight className="size-4 shrink-0 text-muted-foreground transition-all group-hover:text-accent group-hover:translate-x-0.5" />
           </Link>
         );
       })}

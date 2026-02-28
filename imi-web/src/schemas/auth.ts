@@ -60,11 +60,15 @@ export const loginSchema = z.object({
 
 export const signupSchema = z
   .object({
+    name: z.string().min(2, "El nombre es requerido").optional(),
     email: z.string().min(1, "El correo es requerido").email("Correo inválido"),
-    password: z
-      .string()
-      .min(8, "La contraseña debe tener al menos 8 caracteres"),
+    password: z.string().min(8, "La contraseña debe tener al menos 8 caracteres"),
     confirmPassword: z.string().min(1, "Confirmá tu contraseña"),
+    dni: z
+      .string()
+      .min(1, "El DNI es requerido")
+      .regex(/^\d{7,8}$/, "El DNI debe tener 7 u 8 dígitos numéricos")
+      .optional(),
     matricula: z
       .string()
       .min(1, "La matrícula es requerida")
@@ -79,6 +83,7 @@ export const signupSchema = z
       .refine((val) => (ESPECIALIDADES as readonly string[]).includes(val), {
         message: "Seleccioná una especialidad válida",
       }),
+    firmaDigital: z.string().optional(),
   })
   .refine((data) => data.password === data.confirmPassword, {
     message: "Las contraseñas no coinciden",
